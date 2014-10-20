@@ -16,5 +16,5 @@
   command: nova --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} flavor-create m1.rhel.custom01 m1rhelcust01 2048 25 2 --is-public false
   
 - name: Grant access to Intelligence on new flavor
-  shell: nova --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} flavor-access-add m1rhelcust01 $(keystone tenant-list | awk '/ Operations / {print $2}')
+  shell: nova --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} flavor-access-add m1rhelcust01 $(keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} tenant-list | awk '/ Operations / {print $2}')
   
