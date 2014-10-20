@@ -1,0 +1,43 @@
+---
+
+- name: Create Automation user
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-create --name=ansible --pass=passwd
+
+- name: Assign Automation user to admin role
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=ansible --tenant=admin --role=admin
+
+- name: Create Ops user
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-create --name=ops --pass=passwd
+
+- name: Create Intel user
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-create --name=intel --pass=passwd
+
+- name: Create Manpwr user
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-create --name=manpwr --pass=passwd
+
+- name: Create Operations environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} tenant-create --name=Operations --description="Operations Directorate"
+  
+- name: Create Intelligence environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} tenant-create --name=Intelligence --description="Intelligence Directorate"
+  
+- name: Create Manpower environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} tenant-create --name=Manpower --description="Manpower Directorate"  
+
+- name: Assign Ops user to admin role and Operations environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=ops --tenant=Operations --role=_member_
+
+- name: Assign Intel user to admin role and Intelligence environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=intel --tenant=Intelligence --role=_member_
+
+- name: Assign Manpwr user to admin role and Manpower environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=manpwr --tenant=Manpower --role=_member_
+  
+- name: Create Ops user keypair
+  command: nova --os-username={{ OPS_USERNAME }} --os-password={{ OPS_PASSWORD }} --os-tenant-name={{ OPS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} keypair-add --pub-key /root/.ssh/id_rsa.pub controller-key
+  
+- name: Create Intel user keypair
+  command: nova --os-username={{ INTEL_USERNAME }} --os-password={{ INTEL_PASSWORD }} --os-tenant-name={{ INTEL_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} keypair-add --pub-key /root/.ssh/id_rsa.pub controller-key
+  
+- name: Create Manpwr user keypair
+  command: nova --os-username={{ MANPWR_USERNAME }} --os-password={{ MANPWR_PASSWORD }} --os-tenant-name={{ MANPWR_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} keypair-add --pub-key /root/.ssh/id_rsa.pub controller-key

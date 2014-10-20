@@ -1,0 +1,20 @@
+---
+
+- name: Import new RHEL 7 private image 
+  command: glance --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} image-create --name rhel-7.0 --is-public false --container-format bare --disk-format qcow2 --copy-from http://657a93671c60940479c9-f7fc23ef60c7220824e6d618c141b70b.r51.cf5.rackcdn.com/rhel-7-install.img
+  
+- name: Import new CentOS 7 private image
+  command: glance --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} image-create --name centos-7.0 --is-public false --container-format bare --disk-format qcow2 --copy-from http://657a93671c60940479c9-f7fc23ef60c7220824e6d618c141b70b.r51.cf5.rackcdn.com/centos-7-install.img
+  
+- name: Grant RHEL 7 image to Operations environment
+  command: glance --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} member-create $(glance image-list | awk '/ rhel-7.0 / {print $2}') Operations
+  
+- name: Grant CentOS 7 image to Intelligence environment
+  command: glance --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} member-create $(glance image-list | awk '/ centos-7.0 / {print $2}') Intelligence
+
+- name: Create new instance flavor for RHEL/CentOS 7
+  command: nova --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} flavor-create m1.rhel.custom01 m1rhelcust01 2048 25 2 --is-public false
+  
+- name: Grant access to Intelligence on new flavor
+  command: nova --os-username={{ OS_USERNAME }} --os-password={{ OS_PASSWORD }} --os-tenant-name={{ OS_TENANT_NAME }} --os-auth-url={{ OS_AUTH_URL }} flavor-access-add m1rhelcust01 $(keystone tenant-list | awk '/ Operations / {print $2}')
+  
