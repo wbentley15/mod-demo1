@@ -30,6 +30,9 @@
 - name: Assign Intel user to admin role and Intelligence environment
   command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=intel --tenant=Intelligence --role=_member_
 
+- name: Assign Intel user to admin role and Intelligence environment
+  command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=intel --tenant=Intelligence --role=heat_stack_owner
+
 - name: Assign Manpwr user to admin role and Manpower environment
   command: keystone --os-token={{ OS_SERVICE_TOKEN }} --os-endpoint={{ OS_AUTH_URL }} user-role-add --user=manpwr --tenant=Manpower --role=_member_
   
